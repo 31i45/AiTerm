@@ -1,0 +1,27 @@
+{
+  "server": {
+    "host": "127.0.0.1",
+    "port": 3000
+  },
+  "ollama": {
+    "baseUrl": "http://127.0.0.1:11434",
+    "defaultModel": "llama3.2"
+  },
+  "security": {
+    "enabled": false,
+    "password": "",
+    "sessionTimeout": 3600000
+  },
+  "highRiskCommands": [
+    "rm", "rmdir", "mkfs", "dd", "reboot", "shutdown", "halt", "poweroff", "fdisk", "mkfs", "chmod 777", "chown -R", ":(){:|:&};:", "chattr", "mv /", "mkfs.ext", "mkfs.xfs", "mkfs.btrfs", "mkfs.vfat", "mkfs.ntfs", "wipefs", "parted", "gparted", "fdisk", "cfdisk", "sfdisk", "gdisk", "cgdisk", "sgdisk", "wipefs", "wipefs -a", "dd if=", "of=/dev/zero", "of=/dev/null", "of=/dev/sd", "of=/dev/hd", "dd if=/dev/urandom", "dd if=/dev/random"
+  ],
+  "safeCommands": [
+    "ls", "cd", "pwd", "cat", "echo", "date", "whoami", "ps", "top", "df", "du", "free", "uptime", "hostname", "uname", "id", "groups", "last", "history", "clear", "man", "help", "which", "whereis", "whatis", "apropos", "file", "stat", "lsattr", "chattr -", "chattr +a", "chattr +i", "chattr -i", "chattr -a", "chmod", "chown", "chgrp", "ln", "mv", "cp", "touch", "mkdir", "rmdir", "rm -i", "rm -f", "rm -r", "rm -rf"
+  ],
+  "useWhitelist": false,
+  "maxContextLength": 100,
+  "ws": {
+    "maxReconnectAttempts": 5,
+    "reconnectDelayMs": 1000
+  }
+}

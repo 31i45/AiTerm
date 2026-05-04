@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="AiTerm - AI Powered Terminal">
+    <meta name="theme-color" content="#0a0a0f">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <title>AiTerm</title>
+    
+    <script type="importmap">
+    {
+        "imports": {
+            "@chenglou/pretext": "./lib/pretext/layout.js"
+        }
+    }
+    </script>
+    
+    <link rel="stylesheet" href="./frontend/styles.css">
+    <link rel="stylesheet" href="./lib/xterm/xterm.css">
+    <script src="./lib/xterm/xterm.js"></script>
+    <script src="./lib/xterm/xterm-addon-fit.js"></script>
+    <script src="./lib/xterm/xterm-addon-attach.js"></script>
+    <script src="./lib/xterm/xterm-addon-search.js"></script>
+</head>
+<body>
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-logo">⚡</div>
+        <div class="loading-title">AiTerm</div>
+        <div id="loadingMessage" class="loading-subtitle">正在初始化...</div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <!-- 审计日志弹窗 -->
+    <div id="auditModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">📝 审计日志</div>
+                <div class="modal-close" id="auditModalClose">&times;</div>
+            </div>
+            <div class="modal-body">
+                <div class="log-tabs">
+                    <button class="log-tab active" data-type="audit">审计日志</button>
+                    <button class="log-tab" data-type="app">应用日志</button>
+                </div>
+                <div class="modal-body-inner">
+                    <div class="log-list" id="logList">
+                        <div class="loading-logs">加载日志列表...</div>
+                    </div>
+                    <div class="log-content" id="logContent">
+                        <div class="log-content-empty">选择一个日志文件查看</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <div class="terminal-panel" id="terminalPanel" style="width: 50%;">
+            <div class="terminal-header">
+                <div class="terminal-icon">📺</div>
+                <div class="terminal-title">SSH 终端</div>
+                <div class="terminal-toolbar">
+                    <button id="searchBtn" class="btn-icon" title="搜索 (Ctrl+F)">搜索</button>
+                    <button id="fontMinusBtn" class="btn-icon" title="字体减小">A-</button>
+                    <button id="fontPlusBtn" class="btn-icon" title="字体增大">A+</button>
+                    <button id="clearBtn" class="btn-icon" title="清空终端">清屏</button>
+                </div>
+            </div>
+            <div class="tabs-bar">
+                <div id="tabsContainer" class="tabs-container"></div>
+                <button id="addTabBtn" class="add-tab-btn" title="新建终端">+</button>
+            </div>
+            <div id="searchPanel" class="search-panel hidden">
+                <input type="text" id="searchInput" class="search-input" placeholder="搜索...">
+                <button id="caseSensitiveBtn" class="btn-icon" title="区分大小写">Aa</button>
+                <button id="regexBtn" class="btn-icon" title="正则表达式">.*</button>
+                <span id="searchCount" class="search-count"></span>
+                <button id="searchPrevBtn" class="btn-icon" title="上一个">▲</button>
+                <button id="searchNextBtn" class="btn-icon" title="下一个">▼</button>
+                <button id="searchCloseBtn" class="btn-icon" title="关闭">✕</button>
+            </div>
+            <div class="terminal-content" id="terminalsContainer"></div>
+        </div>
+
+        <div id="resizer" class="resizer"></div>
+
+        <div class="ai-panel" id="aiPanel" style="width: 50%;">
+            <div class="ai-header">
+                <div class="ai-header-left">
+                    <div class="ai-icon">🤖</div>
+                    <div class="ai-title">AI 助手</div>
+                </div>
+                <div class="ai-header-right">
+                    <select id="modelSelect" class="model-select">
+                        <option value="" disabled selected>加载模型...</option>
+                    </select>
+                    <button id="refreshModelsBtn" class="btn-icon" title="刷新模型">🔄</button>
+                    <button id="auditBtn" class="btn-icon" title="审计日志">📝</button>
+                </div>
+            </div>
+            <div class="ai-content">
+                <canvas id="aiCanvas"></canvas>
+                <div class="ai-input-area">
+                    <div class="ai-input-wrapper">
+                        <textarea id="aiInput" placeholder="输入消息... (Shift+Enter 换行)" rows="1"></textarea>
+                        <button id="aiSendBtn">➤</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./frontend/app.js"></script>
+</body>
+</html>
