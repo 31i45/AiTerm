@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Logs
+logs/
+audit_logs/
+*.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+config.json
+
+# User uploads
+.uploads/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/
+
+# Test coverage
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Lock files (optional - uncomment if you want to ignore)
+# package-lock.json

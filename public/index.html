@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="AiTerm - AI Powered Terminal">
+    <meta name="theme-color" content="#0a0a0f">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <title>AiTerm</title>
+    
+    <link rel="stylesheet" href="./frontend/styles.css">
+    <link rel="stylesheet" href="./frontend/ai/ai-panel.css">
+    <link rel="stylesheet" href="./node_modules/@xterm/xterm/css/xterm.css">
+    <link rel="stylesheet" href="./node_modules/highlight.js/styles/atom-one-dark.css">
+    <script src="./node_modules/@xterm/xterm/lib/xterm.js"></script>
+    <script src="./node_modules/@xterm/addon-fit/lib/addon-fit.js"></script>
+    <script src="./node_modules/@xterm/addon-attach/lib/addon-attach.js"></script>
+    <script src="./node_modules/@xterm/addon-search/lib/addon-search.js"></script>
+    <script src="./highlight-loader.js"></script>
+</head>
+<body>
+    <div id="loadingScreen" class="loading-screen" role="status" aria-live="polite">
+        <div class="loading-logo" aria-hidden="true">⚡</div>
+        <div class="loading-title">AiTerm</div>
+        <div id="loadingMessage" class="loading-subtitle">正在初始化...</div>
+    </div>
+
+    <div id="toast" class="toast" role="alert" aria-live="assertive"></div>
+
+    <!-- 审计日志弹窗 -->
+    <div id="auditModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="auditModalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="auditModalTitle">📝 日志查看器</div>
+                <div class="modal-close" id="auditModalClose" role="button" aria-label="关闭弹窗" tabindex="0">&times;</div>
+            </div>
+            <div class="modal-body">
+                <div class="log-tabs" role="tablist" aria-label="日志类型">
+                    <button class="log-tab active" data-type="audit" role="tab" aria-selected="true" tabindex="0">审计日志</button>
+                    <button class="log-tab" data-type="app" role="tab" aria-selected="false" tabindex="-1">应用日志</button>
+                </div>
+                <!-- 日志搜索栏 -->
+                <div class="log-search-bar">
+                    <input type="text" id="logSearchInput" class="log-search-input" placeholder="搜索日志内容..." aria-label="搜索日志">
+                    <span id="logSearchCount" class="log-search-count" aria-live="polite"></span>
+                    <button id="logSearchPrev" class="btn-icon" title="上一个匹配" aria-label="上一个匹配">▲</button>
+                    <button id="logSearchNext" class="btn-icon" title="下一个匹配" aria-label="下一个匹配">▼</button>
+                    <button id="logSearchClear" class="btn-icon" title="清除搜索" aria-label="清除搜索">✕</button>
+                </div>
+                <div class="modal-body-inner">
+                    <div class="log-list" id="logList" role="listbox" aria-label="日志文件列表">
+                        <div class="loading-logs">加载日志列表...</div>
+                    </div>
+                    <div class="log-content" id="logContent" role="document" aria-label="日志内容">
+                        <div class="log-content-empty">选择一个日志文件查看</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <div class="terminal-panel" id="terminalPanel" style="width: 50%;" role="region" aria-label="终端面板">
+            <div class="terminal-header">
+                <div class="terminal-icon" aria-hidden="true">📺</div>
+                <div class="terminal-title">本地终端</div>
+                <div class="tabs-bar">
+                    <div id="tabsContainer" class="tabs-container" role="tablist" aria-label="终端标签页"></div>
+                    <button id="addTabBtn" class="add-tab-btn" title="新建终端 (Ctrl+Shift+T)" aria-label="新建终端">+</button>
+                </div>
+                <div class="terminal-toolbar">
+                    <button id="searchBtn" class="btn-icon" title="搜索 (Ctrl+F)" aria-label="搜索终端内容">搜索</button>
+                    <button id="fontMinusBtn" class="btn-icon" title="字体减小 (Ctrl+-)" aria-label="减小字体">A-</button>
+                    <button id="fontPlusBtn" class="btn-icon" title="字体增大 (Ctrl++)" aria-label="增大字体">A+</button>
+                </div>
+            </div>
+            <div id="searchPanel" class="search-panel hidden" role="search" aria-label="终端搜索">
+                <input type="text" id="searchInput" class="search-input" placeholder="搜索..." aria-label="搜索关键词">
+                <button id="caseSensitiveBtn" class="btn-icon" title="区分大小写" aria-label="区分大小写" aria-pressed="false">Aa</button>
+                <button id="regexBtn" class="btn-icon" title="正则表达式" aria-label="正则表达式" aria-pressed="false">.*</button>
+                <span id="searchCount" class="search-count" aria-live="polite"></span>
+                <button id="searchPrevBtn" class="btn-icon" title="上一个 (Enter)" aria-label="上一个匹配">▲</button>
+                <button id="searchNextBtn" class="btn-icon" title="下一个 (Shift+Enter)" aria-label="下一个匹配">▼</button>
+                <button id="searchCloseBtn" class="btn-icon" title="关闭 (Escape)" aria-label="关闭搜索">✕</button>
+            </div>
+            <div class="terminal-content" id="terminalsContainer" role="tabpanel" aria-label="终端内容"></div>
+        </div>
+
+        <div id="resizer" class="resizer" role="separator" aria-orientation="vertical" aria-label="调整面板大小" tabindex="0"></div>
+
+        <div class="ai-panel" id="aiPanel" style="width: 50%;" role="region" aria-label="AI 助手面板">
+            <div class="ai-header">
+                <div class="ai-header-left">
+                    <div class="ai-icon" aria-hidden="true">🤖</div>
+                    <div class="ai-title">AI 助手</div>
+                </div>
+                <div class="ai-header-right">
+                    <select id="modelSelect" class="model-select" title="选择 AI 模型" aria-label="选择 AI 模型" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        <option value="" disabled selected>加载模型...</option>
+                    </select>
+                    <button id="refreshModelsBtn" class="btn-icon" title="刷新模型列表" aria-label="刷新模型列表">刷新</button>
+                    <button id="auditBtn" class="btn-icon" title="查看审计日志" aria-label="查看审计日志">日志</button>
+                </div>
+            </div>
+            <div class="ai-content" id="aiPanelContainer" aria-label="AI 对话区域">
+                <!-- AI Panel will be initialized here -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./frontend/app.js"></script>
+</body>
+</html>
