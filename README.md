@@ -5,6 +5,9 @@
 
 AiTerm 是一款基于 Web 的 AI 增强型终端应用，将完整的本地伪终端（PTY）与 Ollama 大语言模型深度集成，为开发者提供智能化的命令行体验。
 
+<img width="1280" height="684" alt="image" src="https://github.com/user-attachments/assets/e2e7b9a9-51a2-4804-8b20-78f3a58d0503" />
+
+
 ## ✨ 核心特性
 
 ### 🖥️ 完整的本地终端
