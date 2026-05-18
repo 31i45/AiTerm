@@ -262,4 +262,4 @@ aiterm-v2/
 
 ## 📄 许可证
 
-[MIT](LICENSE) © 2024 AiTerm Contributors
+[MIT](LICENSE) © 2026 AiTerm Contributors
