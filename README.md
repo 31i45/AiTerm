@@ -7,6 +7,8 @@
 
 > **本地优先、AI 驱动的智能终端** —— 在离线环境中享受 AI 辅助编程的强大能力
 
+<img width="1751" height="1081" alt="image" src="https://github.com/user-attachments/assets/4d68fe57-ce5d-4141-9cbf-c62dac48b570" />
+
 ---
 
 ## ✨ 核心特性
