@@ -104,7 +104,10 @@ class TerminalSessionManager {
             }
         }
 
-        const ptyProcess = pty.spawn(shell, [], {
+        // 根据 shell 类型设置参数（PowerShell 使用 -Login 加载 profile）
+        const shellArgs = this._getShellArgs(shell);
+
+        const ptyProcess = pty.spawn(shell, shellArgs, {
             name: 'xterm-256color',
             cols,
             rows,
@@ -304,7 +307,7 @@ class TerminalSessionManager {
     _getDefaultShell() {
         const platform = os.platform();
         const candidates = platform === 'win32'
-            ? ['powershell.exe', 'cmd.exe', 'pwsh.exe']
+            ? ['pwsh.exe', 'powershell.exe', 'cmd.exe']
             : platform === 'darwin'
                 ? ['/bin/zsh', '/bin/bash', '/bin/sh']
                 : ['/bin/bash', '/bin/sh', '/bin/zsh'];
@@ -317,6 +320,25 @@ class TerminalSessionManager {
 
         // 兜底方案
         return platform === 'win32' ? 'cmd.exe' : '/bin/sh';
+    }
+
+    /**
+     * 获取 shell 启动参数
+     * PowerShell 使用 -Login 加载 profile，其他 shell 不使用额外参数
+     * @private
+     * @param {string} shell
+     * @returns {string[]}
+     */
+    _getShellArgs(shell) {
+        const basename = path.basename(shell).toLowerCase();
+
+        // PowerShell Core 和 Windows PowerShell 都使用 -Login 加载 profile
+        if (basename === 'pwsh.exe' || basename === 'powershell.exe') {
+            return ['-Login'];
+        }
+
+        // cmd.exe 和其他 shell 不需要额外参数
+        return [];
     }
 
     /**
