@@ -403,14 +403,27 @@ function reattachTerminals() {
 }
 
 async function fetchModels() {
+    // 显示加载状态
+    modelSelect.innerHTML = '<option value="">加载模型...</option>';
+    modelSelect.disabled = true;
+    
     try {
         const response = await fetch('/api/ollama/models');
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         const data = await response.json();
+        
         // 使用 DOM API 避免 XSS
         modelSelect.innerHTML = '';
+        
+        // 检查是否有模型
+        if (!data.models || data.models.length === 0) {
+            modelSelect.innerHTML = '<option value="">未找到本地模型</option>';
+            showToast('未检测到 Ollama 模型，请先安装模型', 'warning');
+            return;
+        }
+        
         data.models.forEach(m => {
             const name = typeof m === 'object' ? (m.name || m.model || m.id || JSON.stringify(m)) : m;
             const option = document.createElement('option');
@@ -418,10 +431,15 @@ async function fetchModels() {
             option.textContent = name;
             modelSelect.appendChild(option);
         });
+        
+        showToast(`已加载 ${data.models.length} 个模型`, 'success');
     } catch (e) {
         console.error('Failed to fetch models:', e);
         // 如果获取失败，添加一个默认选项
         modelSelect.innerHTML = '<option value="">无法获取模型列表</option>';
+        showToast('无法连接到 Ollama，请检查服务是否运行', 'error');
+    } finally {
+        modelSelect.disabled = false;
     }
 }
 

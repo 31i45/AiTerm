@@ -74,6 +74,26 @@ export function initAIPanel(container) {
     inputField = panelContainer.querySelector('.ai-input');
     sendButton = panelContainer.querySelector('.ai-send-btn');
     
+    // 添加空状态提示
+    const emptyState = document.createElement('div');
+    emptyState.className = 'ai-empty-state';
+    emptyState.innerHTML = `
+        <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary); opacity: 0.7;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 16px; opacity: 0.5;">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+                <path d="M8 12h8M12 8v8"/>
+            </svg>
+            <p style="font-size: 16px; margin-bottom: 8px;">👋 欢迎使用 AiTerm 智能助手</p>
+            <p style="font-size: 13px; line-height: 1.6; max-width: 280px; margin: 0 auto;">
+                在下方输入框发送消息，我可以帮您：<br/>
+                • 解释命令和代码<br/>
+                • 编写和调试脚本<br/>
+                • 回答技术问题
+            </p>
+        </div>
+    `;
+    messagesContainer.appendChild(emptyState);
+    
     // Event listeners
     sendButton.addEventListener('click', handleSend);
     inputField.addEventListener('keydown', (e) => {
@@ -244,6 +264,12 @@ function renderMessage(message, isStream = false) {
             selection.modify('extend', 'forward', 'word');
         }
     });
+    
+    // 移除空状态提示（如果存在）
+    const emptyState = messagesContainer.querySelector('.ai-empty-state');
+    if (emptyState) {
+        emptyState.remove();
+    }
     
     messagesContainer.appendChild(el);
 }
@@ -417,15 +443,26 @@ function autoResizeInput() {
 
 /**
  * Scroll to bottom of messages
+ * 使用平滑滚动，并确保滚动到底部
  */
 function scrollToBottom() {
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    if (!messagesContainer) return;
+    
+    // 使用 requestAnimationFrame 确保在 DOM 更新后滚动
+    requestAnimationFrame(() => {
+        messagesContainer.scrollTo({
+            top: messagesContainer.scrollHeight,
+            behavior: 'smooth'
+        });
+    });
 }
 
 /**
  * Persist messages to localStorage with size limit
+ * Configuration values are defined in config.json under ui.maxMessages and ui.maxMessagesFallback
  */
-const MAX_MESSAGES = 500; // 最多保留 500 条消息
+const MAX_MESSAGES = 500; // 最多保留 500 条消息（与后端 config.js 中的 ui.maxMessages 保持一致）
+const MAX_MESSAGES_FALLBACK = 100; // 存储失败时的回退数量
 
 function persistMessages() {
     try {
@@ -437,8 +474,8 @@ function persistMessages() {
     } catch (e) {
         console.warn('Failed to persist messages:', e);
         // 如果存储失败（超出配额），尝试清理旧消息
-        if (e.name === 'QuotaExceededError' && messages.length > 100) {
-            messages = messages.slice(-100); // 只保留最近 100 条
+        if (e.name === 'QuotaExceededError' && messages.length > MAX_MESSAGES_FALLBACK) {
+            messages = messages.slice(-MAX_MESSAGES_FALLBACK); // 只保留最近 100 条
             try {
                 localStorage.setItem('ai_messages', JSON.stringify(messages));
             } catch (e2) {

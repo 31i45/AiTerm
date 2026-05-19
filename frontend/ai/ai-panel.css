@@ -56,7 +56,7 @@
     border-radius: 12px;
     line-height: 1.6;
     word-wrap: break-word;
-    /* 鍏佽鏂囨湰閫変腑 */
+    /* 允许文本选中 */
     user-select: text;
     -webkit-user-select: text;
     cursor: text;
@@ -91,7 +91,7 @@
 }
 
 .ai-message-content.streaming-text::after {
-    content: '鈻?;
+    content: '▋';
     animation: blink 1s infinite;
     color: #50fa7b;
 }
@@ -144,7 +144,7 @@
     padding: 16px;
     margin: 12px 0;
     overflow-x: auto;
-    /* 鍏佽浠ｇ爜鍧楅€変腑 */
+    /* 允许代码块选中 */
     user-select: text;
     -webkit-user-select: text;
     /* 美化滚动条 */
@@ -388,13 +388,13 @@
     color: inherit;
 }
 
-/* 閫変腑鏃剁殑瑙嗚鍙嶉 */
+/* 选中时的视觉反馈 */
 .ai-message-content ::-moz-selection {
     background: rgba(189, 147, 249, 0.5);
     color: inherit;
 }
 
-/* 浠ｇ爜鍧楅€変腑 */
+/* 代码块选中 */
 .ai-message-content pre ::selection,
 .ai-message-content code ::selection {
     background: rgba(255, 121, 198, 0.4);

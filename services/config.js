@@ -14,15 +14,16 @@ const DEFAULT_CONFIG = {
     server: { host: '127.0.0.1', port: 3000 },
     ollama: { baseUrl: 'http://127.0.0.1:11434', defaultModel: 'llama3.2' },
     security: { enabled: false, password: '', sessionTimeout: 3600000 },
-    highRiskCommands: [],
-    safeCommands: [],
-    useWhitelist: false,
     maxContextLength: 100,
     ws: { maxReconnectAttempts: 5, reconnectDelayMs: 1000 },
     limits: {
         maxSessionsPerUser: 10,
         maxCommandLength: 10000,
         rateLimit: { windowMs: 60000, maxRequests: 120 }
+    },
+    ui: {
+        maxMessages: 500,
+        maxMessagesFallback: 100
     }
 };
 

@@ -109,11 +109,13 @@ app.use('/node_modules', express.static(nodeModulesDir, {
     }
 }));
 
+// 解析 JSON 请求体（必须在路由之前）
+app.use(express.json({ limit: '1mb' }));
+
 // 根路径返回 index.html
 app.get('/', (req, res) => {
     res.sendFile(path.join(publicDir, 'index.html'));
 });
-app.use(express.json({ limit: '1mb' }));
 
 // HTTP 速率限制中间件
 const httpRateLimits = new Map();
@@ -181,13 +183,6 @@ app.use((req, res, next) => {
     };
 
     next();
-});
-
-// ============================================
-// 路由 - 页面
-// ============================================
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // ============================================

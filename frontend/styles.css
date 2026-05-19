@@ -257,7 +257,7 @@ html, body {
     display: none;
 }
 
-/* 缇庡寲缁堢婊氬姩鏉?*/
+/* 终端滚动条容器 */
 .terminal-instance .xterm-viewport {
     overflow-y: auto !important;
 }
@@ -985,7 +985,7 @@ html, body {
     text-align: center;
 }
 
-/* ===== 閿洏蹇嵎閿彁绀?===== */
+/* ===== 键盘快捷键提示 ===== */
 .kbd {
     display: inline-block;
     padding: 2px 6px;
@@ -1014,7 +1014,7 @@ html, body {
     opacity: 1;
 }
 
-/* ===== 蹇嵎閿府鍔╅潰鏉?===== */
+/* ===== 快捷键帮助面板 ===== */
 .shortcuts-panel {
     position: fixed;
     bottom: 20px;
@@ -1050,7 +1050,7 @@ html, body {
     margin-left: 0;
 }
 
-/* ===== 鍝嶅簲寮忚璁?===== */
+/* ===== 响应式设置 ===== */
 @media (max-width: 768px) {
     .terminal-panel {
         min-width: 100% !important;
@@ -1079,7 +1079,7 @@ html, body {
     }
 }
 
-/* ===== 绉诲姩绔垏鎹㈡寜閽?===== */
+/* ===== 移动端切换按钮 ===== */
 .mobile-toggle {
     display: none;
     position: fixed;
@@ -1110,7 +1110,7 @@ html, body {
     }
 }
 
-/* ===== 鏀硅繘鐨?Toast 閫氱煡 ===== */
+/* ===== 改进的 Toast 通知 ===== */
 .toast {
     position: fixed;
     bottom: 24px;
@@ -1155,7 +1155,7 @@ html, body {
     font-size: 18px;
 }
 
-/* ===== 鍔犺浇鍔ㄧ敾鏀硅繘 ===== */
+/* ===== 加载动画改进 ===== */
 @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
@@ -1184,7 +1184,7 @@ html, body {
     animation: slideUp 0.5s ease-out 0.4s both;
 }
 
-/* ===== 鐒︾偣鍙鎬ф敼杩?===== */
+/* ===== 焦点可见性改进 ===== */
 *:focus-visible {
     outline: 2px solid #bd93f9;
     outline-offset: 2px;
@@ -1197,12 +1197,12 @@ select:focus-visible {
     outline-offset: 2px;
 }
 
-/* ===== 骞虫粦婊氬姩 ===== */
+/* ===== 平滑滚动 ===== */
 * {
     scroll-behavior: smooth;
 }
 
-/* ===== 閫夋嫨鏂囨湰鏍峰紡 ===== */
+/* ===== 选择文本样式 ===== */
 ::selection {
     background: rgba(189, 147, 249, 0.3);
     color: inherit;
